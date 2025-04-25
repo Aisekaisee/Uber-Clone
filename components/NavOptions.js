@@ -3,6 +3,8 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
+import { useSelector } from 'react-redux';
+import { selectOrigin } from '../slices/NavSlice';
 
 const data=[
     {
@@ -22,33 +24,39 @@ const data=[
 const NavOptions = () => {
 
     const navigation = useNavigation();
+    const origin = useSelector(selectOrigin);
+
     return (
-    <FlatList
-    data={data}
-    keyExtractor={(item) => (item.id) }
-    horizontal
-    renderItem={({item}) => (
-        <TouchableOpacity 
-        onPress={() => navigation.navigate(item.screen)}
-        className="p-2 pl-6 pb-8 pt-4 bg-gray-200 m-2 w-40"> 
-            <View>
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id}
+          horizontal
+          contentContainerStyle="px-3"
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate(item.screen)}
+              disabled={!origin}
+              className={`p-3 pb-5 pl-4 bg-gray-200 m-2 w-40 rounded-lg ${!origin ? 'opacity-30' : ''}`}
+            >
+              <View className="items-center">
                 <Image
-                style={{width:120, height:120, resizeMode:'contain'}}
-                source={{uri:item.image}}
+                  className="w-32 h-32"
+                  source={{ uri: item.image }}
+                  resizeMode="contain"
                 />
-                <Text className="mt-2 text-lg font-semibold">{item.title}</Text>
-                <Icon 
-                className="p-3 bg-black rounded-full w-10 mt-4"
-                name="arrowright" 
-                color="white" 
-                type="antdesign"
-                size={15}
-                />
-            </View>
-        </TouchableOpacity>
-    )}
-    />
-  )
+                <Text className="mt-2 text-lg font-semibold text-center">{item.title}</Text>
+                <View className="bg-black rounded-full w-8 h-8 items-center justify-center mt-4">
+                  <Icon 
+                    name="arrowright" 
+                    color="white" 
+                    size={15}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      );    
 }
 
 const styles = StyleSheet.create({})
